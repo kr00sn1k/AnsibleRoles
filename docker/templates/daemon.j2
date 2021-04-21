@@ -1,0 +1,10 @@
+{% if logserv is defined %}
+
+{
+  "log-driver": "gelf",
+  "log-opts": {
+    "gelf-address": "udp://{{ logserv }}:12201"
+  }
+}
+
+{% endif %}

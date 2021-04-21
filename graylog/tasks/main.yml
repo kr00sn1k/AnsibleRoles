@@ -1,0 +1,35 @@
+---
+
+- name: Проверим что репозиторий еще не подключен
+  shell: "grep -r gray /etc/apt | wc -l"
+  register: graylogrepo
+  become: yes
+
+- name: Установим репозиторий. Шаг 1
+  get_url:
+       url: "https://packages.graylog2.org/repo/packages/graylog-3.0-repository_latest.deb"
+       dest: "/tmp/graylog_repo.deb"
+  when: graylogrepo.stdout[0] == 0
+
+- name: Установим репозиторий. Шаг 2
+  apt:
+      deb: "/tmp/graylog_repo.deb"
+      state: present
+  become: yes
+  when: graylogrepo.stdout[0] == 0
+
+- name: Обновим репозиторий и поставим GrayLog-Server
+  apt:
+     update_cache: yes
+     state: latest
+     name: ['graylog-server']
+  become: yes
+  notify: graylog_restart
+
+- name: Копируем конфиг
+  copy:
+      src: "server.conf"
+      dest: "/etc/graylog/server/server.conf"
+      backup: yes
+  become: yes
+  notify: graylog_restart

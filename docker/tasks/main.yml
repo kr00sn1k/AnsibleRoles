@@ -1,0 +1,42 @@
+---
+
+- name: Ставим весь нужный софт
+  apt:
+      name: ['python3-docker','dnsutils','apt-transport-https','ca-certificates','curl','software-properties-common']
+      state: latest
+  become: yes
+
+- name: Ставим ключи gpg для репозиториев
+  apt_key:
+      url: "{{ item }}"
+      state: present
+  with_items:
+  - "https://download.docker.com/linux/ubuntu/gpg"
+  become: yes
+
+- name: Подключаем репозитории docker
+  copy:
+      src: "{{ item }}"
+      dest: "/etc/apt/sources.list.d/{{ item }}"
+  with_items:
+  - "docker.list"
+  become: yes
+
+- name: Обновим apt
+  apt:
+     update_cache: yes
+  become: yes
+
+- name: Установка Docker
+  apt:
+      name: [ 'docker-ce','docker-compose' ]
+      state: latest
+  become: yes
+
+- name: Генерируем Docker daemon.json
+  template:
+    src: "daemon.j2"
+    dest: "/etc/docker/daemon.json"
+  become: yes
+  notify: dockerd_restart
+

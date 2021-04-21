@@ -1,0 +1,30 @@
+---
+
+- name: Ставим ключ репозитория
+  apt_key:
+          #      url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+      keyserver: "keyserver.ubuntu.com"
+      id: "9DA31620334BD75D9DCB49F368818C72E52529D4"
+      state: present
+  become: yes
+
+- name: Подключаем репозиторий
+  copy:
+      src: "mongodb.list"
+      dest: "/etc/apt/sources.list.d/mongodb.list"
+  become: yes
+
+- name: Обновим репозиторий и поставим MongoDB
+  apt:
+     update_cache: yes
+     state: latest
+     name: ['mongodb-org']
+  become: yes
+  notify: mongo_restart
+
+- name: Добавляем в автозапуск
+  service:
+       name: "mongod"
+       enabled: yes
+  become: yes
+

@@ -1,0 +1,7 @@
+---
+
+- name: es_restart
+  service:
+     name: "elasticsearch"
+     state: "restarted"
+  become: yes

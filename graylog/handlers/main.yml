@@ -1,0 +1,7 @@
+---
+
+- name: graylog_restart
+  service:
+      name: "graylog-server"
+      state: "restarted"
+  become: yes
