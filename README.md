@@ -46,3 +46,5 @@
 - **zabbix_server_ip**
 - **zabbix_version**
 - **zabbix_agent: true**
+
+Также для zabbix-агента есть 3 скрипта под шаблоны. Для широкой публики пригодится только один - iostat. Подключается он переменной - **zabbix_agent_script_iostat: true** 
