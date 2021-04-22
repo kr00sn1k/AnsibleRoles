@@ -1,0 +1,36 @@
+---
+
+# Возня с сервером
+ - name: ZabbixServer. Установка
+   apt: pkg={{ item }} state=latest
+   become: yes
+   when: zabbix_server 
+   with_items:
+   - zabbix-server-mysql
+   - python-mysqldb 
+
+ - name: ZabbixServer. БД. Копируем дамп первой установки zabbix-server
+   copy: src=files/zabbixcreate.sql dest=/tmp
+   become: yes
+   when: zabbix_server
+
+ - name: ZabbixServer. БД. Проверяем существует ли база данных
+   stat: path=/var/lib/mysql/{{ zabbix_mysql_db }}/users.frm
+   register: zabbix_status_db
+
+ - name: ZabbixServer. БД. Создаем базу если надо
+   mysql_db: name={{ zabbix_mysql_db }} state=import target=/tmp/create.sql
+   become: yes
+   when: zabbix_status_db.stat.exists == "0" and zabbix_server
+ 
+
+ - name: ZabbixServer. БД. Создаем пользователя в базу если надо
+   mysql_user: name={{ zabbix_mysql_user }} password={{ zabbix_mysql_pass }} state=present
+   become: yes
+   when: zabbix_server
+
+ - name: ZabbixServer. Настройка
+   template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf mode=0644 owner=zabbix group=zabbix force=yes
+   become: yes
+   when: zabbix_server
+   notify: zabbix_server_restart

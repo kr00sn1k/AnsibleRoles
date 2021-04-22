@@ -1,0 +1,54 @@
+#################################################
+# Конфигурационный файл Zabbix-Server-Mysql     #
+# сделанный elve через ansible                  #
+#################################################
+
+# Почему-то другой не дает указать
+PidFile=/run/zabbix/zabbix_server.pid
+
+# Указываем Log-файл
+LogType=file
+LogFile=/var/log/zabbix/zabbix_server.log
+
+# Отключаем ротацию логирования
+LogFileSize=0
+
+# Уровень оповещения в логах
+DebugLevel={{ zabbix_server_debuglevel }}
+
+# Параметры подключения к БД
+DBName={{ zabbix_mysql_db }}
+DBUser={{ zabbix_mysql_user }}
+DBPassword={{ zabbix_mysql_pass }}
+
+# Параметры процессов мониторилки
+StartPollers=90
+StartPollersUnreachable=50
+StartPingers=100
+StartDiscoverers=15
+StartTimers=5
+StartEscalators=5
+HousekeepingFrequency=1
+MaxHousekeeperDelete=500
+
+# Лимиты по памяти
+CacheSize=512M
+StartDBSyncers=15
+HistoryCacheSize=512M
+HistoryIndexCacheSize=48M
+TrendCacheSize=48M
+ValueCacheSize=256M
+
+Timeout=4
+
+AlertScriptsPath=/usr/lib/zabbix/alertscripts
+
+ExternalScripts=/usr/lib/zabbix/externalscripts
+
+FpingLocation=/usr/bin/fping
+
+Fping6Location=/usr/bin/fping6
+
+LogSlowQueries=1000
+
+

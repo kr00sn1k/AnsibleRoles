@@ -1,0 +1,27 @@
+#############################################
+# Конфиг zabbix-agent от elve через ansible #
+#############################################
+
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+
+# Логи
+# Путь к логу
+LogFile={{ zabbix_log_path }}/zabbix_agentd.log
+# Отключаем ротацию логов
+LogFileSize=0
+
+# Включаем удаленное управление
+EnableRemoteCommands=1
+LogRemoteCommands=1
+
+# Указываем адрес zabbix-сервера
+Server={{ zabbix_server_ip }}
+
+#ServerActive=127.0.0.1
+
+# Имя нашего хоста
+Hostname={{ ansible_fqdn }}
+
+# Указываем откуда цеплять инклуды. На некоторых кривых сборках
+# эта опция должна быть определенной, чтоб не было глюков
+Include={{ zabbix_confd_path }}/*.conf

@@ -1,0 +1,27 @@
+---
+
+ - name: Проверяем подключен ли официальный репозиторий Zabbix
+   stat: path=/etc/apt/sources.list.d/zabbix.list
+   register: zabbix_repostat
+
+ - name: Если репозиторий не подключен, то подключаем
+   template: src=zabbix.list.j2 dest=/etc/apt/sources.list.d/zabbix.list mode=0644 owner=root group=root force=yes
+   become: yes
+   when: zabbix_repostat.stat.exists == 0 and ansible_distribution == "Debian"
+
+ - name: Если репозиторий не подключен, то подключаем
+   template: src=zabbix.list.j2 dest=/etc/apt/sources.list.d/zabbix.list mode=0644 owner=root group=root force=yes
+   become: yes
+   when: zabbix_repostat.stat.exists == 0 and ansible_distribution == "Ubuntu"
+
+ - name: Добавляем ключ репозитория
+   apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 082AB56BA14FE591
+   become: yes
+   when: zabbix_repostat.stat.exists == 0
+
+ - name: Если мы подключили репозиторий, то обновляем список пакетов
+   apt: update_cache=yes
+   become: yes
+   when: zabbix_repostat.stat.exists == 0

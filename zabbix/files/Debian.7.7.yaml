@@ -1,0 +1,2 @@
+zabbix_log_path: "/var/log/zabbix"
+zabbix_confd_path: "/etc/zabbix/zabbix_agentd.d"

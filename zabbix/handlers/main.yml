@@ -1,0 +1,13 @@
+---
+
+ - name: zabbix_agent_restart
+   service: name="zabbix-agent" state="restarted"
+   become: yes
+
+ - name: zabbix_agentd_restart
+   service: name="zabbix-agentd" state="restarted"
+   become: yes
+
+ - name: zabbix_server_restart
+   service: name="zabbix-server" state="restarted"
+   become: yes

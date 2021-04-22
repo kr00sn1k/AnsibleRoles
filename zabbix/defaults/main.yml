@@ -1,0 +1,15 @@
+zabbix_agent: true
+zabbix_server: false
+zabbix_frontend: false
+zabbix_server_debuglevel: 0
+zabbix_server_ip: 127.0.0.1
+zabbix_version: 3.2
+zabbix_mysql_db: zabbix
+zabbix_mysql_user: zabbix
+zabbix_mysql_pass: zabbix
+zabbix_log_path: "/var/log/zabbix"
+zabbix_confd_path: "/etc/zabbix/zabbix_agentd.conf.d"
+
+zabbix_agent_script_SslDataCheck: false
+zabbix_agent_script_WplCustom: false
+zabbix_agent_script_iostat: false

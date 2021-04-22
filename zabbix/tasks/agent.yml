@@ -1,0 +1,115 @@
+---
+
+# Возня с агентом
+
+ - name: Установка на Debian-подобные дистрибутивы
+   apt: 
+     pkg: zabbix-agent
+     state: latest
+   become: yes
+   when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+ - name: Установка на Centos
+   yum: 
+     name: zabbix-agent
+     state: latest
+   become: yes
+   when: ansible_distribution == "CentOS"
+
+ - name: Создаем папки необходимые для работы
+   file:
+     path: "{{ item }}"
+     owner: zabbix
+     group: zabbix
+     mode: 0755
+     state: directory
+   with_items:
+   - "{{ zabbix_log_path }}"
+   - "{{ zabbix_confd_path }}"
+   - "/etc/zabbix/scripts"
+   - "/etc/zabbix/scripts/discover"
+   become: yes
+
+ - name: ZabbixAgent. Настройка
+   template: src=zabbix_agentd.conf.j2 dest=/etc/zabbix/zabbix_agentd.conf mode=0644 owner=zabbix group=zabbix force=yes
+   become: yes
+   notify: zabbix_agent_restart
+
+ - name: ZabbixAgent. Скрипты. Проверка времени жизни SSL-сертификатов
+   copy: 
+       src: "{{ item }}"
+       dest: "/etc/zabbix/{{ item }}"
+       owner: zabbix
+       group: zabbix
+       mode: 0755
+   with_items:
+   - scripts/check_ssl_date_https.sh
+   - scripts/check_ssl_date_smtp.sh
+   - scripts/discover/disc_ssl_https.sh
+   - scripts/discover/disc_ssl_smtp.sh 
+   - zabbix_agentd.conf.d/userparameter_check_ssl.conf
+   when: zabbix_agent_script_SslDataCheck
+   become: yes
+   notify: zabbix_agent_restart
+
+ - name: ZabbixAgent. Скрипты. Какие-то древние правила Wipline. Для совместимости
+   copy:
+       src: "{{ item }}"
+       dest: "/etc/zabbix/{{ item }}"
+       owner: zabbix
+       group: zabbix
+       mode: 0755
+   with_items:
+   - zabbix_agentd.conf.d/userparameter_wpl_custom.conf
+   when: zabbix_agent_script_WplCustom
+   become: yes
+   notify: zabbix_agent_restart
+
+ - name: Скрипты. IOstat. Скрипты.
+   copy:
+       src: "scripts/{{ item }}"
+       dest: "/etc/zabbix/scripts/{{ item }}"
+       owner: zabbix
+       group: zabbix
+       mode: 0755
+   with_items:
+   - iostat.sh
+   - iostat-parse.sh
+   - iostat-collect.sh
+   when: zabbix_agent_script_iostat
+   become: yes
+   notify: zabbix_agent_restart
+
+ - name: Скрипты. IOstat. Конфиг.
+   copy:
+       src: "zabbix_agentd.conf.d/userparameter_iostat.conf"
+       dest: "{{ zabbix_confd_path }}/userparameter_iostat.conf"
+       owner: zabbix
+       group: zabbix
+       mode: 0755
+   when: zabbix_agent_script_iostat
+   become: yes
+   notify: zabbix_agent_restart
+
+ - name: Скрипты. IOstat. Ставим вспомогательный софт.
+   apt: 
+     name: sysstat
+     state: latest
+   become: yes
+   when: zabbix_agent_script_iostat and (ansible_distribution == "Ubuntu" or ansible_distribution == "Debian")
+
+ - name: Скрипты. IOstat. Ставим вспомогательный софт.
+   yum:
+     name: sysstat
+     state: latest
+   become: yes
+   when: zabbix_agent_script_iostat and ansible_distribution == "CentOS"
+
+
+ - name: Скрипты. IOstat. Cron.
+   cron:
+      name: "For Zabbix IOStat scripts"
+      job: "/etc/zabbix/scripts/iostat-collect.sh /tmp/iostat.out 60"
+      user: "root"
+   become: yes
+   when: zabbix_agent_script_iostat
