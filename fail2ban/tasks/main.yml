@@ -1,0 +1,58 @@
+---
+
+ - name: Устанавливаем Fail2Ban
+   apt: name=fail2ban
+   become: yes
+
+ - name: Конфигурируем Fail2Ban
+   template: src=jail.conf.{{ ansible_distribution }}.{{ ansible_distribution_release }}.j2 dest="/etc/fail2ban/jail.conf" 
+   become: yes
+   notify: fail2ban_apply_config
+
+ - name: Включаем фильтрацию ssh если нужно
+   template: src=sshd.conf.j2 dest={{ fail2ban_custom_conf }}/sshd.conf
+   become: yes
+   when: fail2ban_ssh_enable
+   notify: fail2ban_apply_config
+
+ - name: Включаем фильтрацию postfix если нужно
+   template: src=postfix.conf.j2 dest={{ fail2ban_custom_conf }}/postfix.conf
+   become: yes
+   when: fail2ban_postfix_enable
+   notify: fail2ban_apply_config
+
+ - name: Включаем фильтрацию asterisk если нужно
+   template: src=asterisk.conf.j2 dest={{ fail2ban_custom_conf }}/asterisk.conf
+   become: yes
+   when: fail2ban_asterisk_enable
+   notify: fail2ban_apply_config
+
+ - name: Включаем фильтрацию dovecot если нужно
+   template: src=dovecot.conf.j2 dest={{ fail2ban_custom_conf }}/dovecot.conf
+   become: yes
+   when: fail2ban_dovecot_enable
+   notify: fail2ban_apply_config
+
+ - name: Если фильтрация ssh не нужна, то выключаем
+   file: state=absent path={{ fail2ban_custom_conf }}/ssh.conf
+   become: yes
+   when: not fail2ban_ssh_enable
+   notify: fail2ban_apply_config
+
+ - name: Если фильтрация postfix не нужна, то выключаем
+   file: state=absent path={{ fail2ban_custom_conf }}/postfix.conf
+   become: yes
+   when: not fail2ban_postfix_enable
+   notify: fail2ban_apply_config
+
+ - name: Если фильтрация asterisk не нужна, то выключаем
+   file: state=absent path={{ fail2ban_custom_conf }}/asterisk.conf
+   become: yes
+   when: not fail2ban_asterisk_enable
+   notify: fail2ban_apply_config
+
+ - name: Если фильтрация dovecot не нужна, то выключаем
+   file: state=absent path={{ fail2ban_custom_conf }}/dovecot.conf
+   become: yes
+   when: not fail2ban_dovecot_enable
+   notify: fail2ban_apply_config

@@ -1,0 +1,5 @@
+---
+
+ - name: fail2ban_apply_config
+   service: name="fail2ban" state="restarted"
+   become: yes

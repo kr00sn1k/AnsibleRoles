@@ -1,0 +1,12 @@
+{% if item.value.nopasswd is defined %}
+{% for x in item.value.nopasswd  %}
+{% if x.comment is defined %}
+#{{x.comment}}
+{% endif %}
+{% if x.priv is defined %}
+{{item.key}} {{ x.host }}=({{x.priv}}) NOPASSWD:{{x.command}}
+{% else %}
+{{item.key}} {{ x.host }}= NOPASSWD:{{x.command}}
+{% endif %}
+{% endfor %}
+{% endif %}

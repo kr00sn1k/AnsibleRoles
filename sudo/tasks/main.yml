@@ -1,0 +1,16 @@
+---
+
+- name: Install sudo (deb)
+  apt:
+    pkg: sudo
+    state: latest
+  become: yes
+
+- name: Настраиваем персональные настройки sudo для пользователей выбранного сервера
+  template:
+     src: "usersudoers.j2"
+     dest: "/etc/sudoers.d/{{ item.key }}"
+     validate: 'visudo -cf %s'
+  with_dict: "{{ sudoers.users }}"
+  become: yes
+  when: sudoers is defined

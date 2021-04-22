@@ -1,0 +1,19 @@
+# Включение и выключение фильтрации
+fail2ban_ssh_enable: false
+fail2ban_postfix_enable: false
+fail2ban_dovecot_enable: false
+fail2ban_asterisk_enable: false
+
+# Конфиги
+# Общие
+fail2ban_bantime: "20m"
+fail2ban_findtime: "20m"
+fail2ban_maxretry: 5
+fail2ban_ignoreip: "127.0.0.1/8"
+fail2ban_destemail: "elve@elve.name"
+fail2ban_mta: "sendmail"
+
+# SSH
+fail2ban_ssh_logpath: /var/log/syslog
+
+fail2ban_custom_conf: /etc/fail2ban/jail.d

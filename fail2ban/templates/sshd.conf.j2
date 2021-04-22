@@ -1,0 +1,9 @@
+[sshd]
+
+filter = sshd
+enabled = true
+port    = ssh
+logpath = {{ fail2ban_ssh_logpath }}
+
+findtime = 3600
+bantime = 86400

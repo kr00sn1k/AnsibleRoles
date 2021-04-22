@@ -1,0 +1,7 @@
+---
+
+#sudoers:
+#      users:
+#        user1:
+#           nopasswd:
+#           - { host: "ALL", command: "/sbin/iptables-save", comment: "Просмотр файлов файрвола" }

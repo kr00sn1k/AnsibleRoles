@@ -1,0 +1,21 @@
+[asterisk-tcp]
+
+enabled  = true
+filter   = asterisk
+port     = 5060,5061
+protocol = tcp
+logpath  = /var/log/asterisk/full
+findtime = 3600
+bantime = 86400
+maxretry = 4
+
+[asterisk-udp]
+
+enabled  = true
+filter   = asterisk
+port     = 5060,5061
+protocol = udp
+logpath  = /var/log/asterisk/full
+findtime = 3600
+bantime = 86400
+maxretry = 4

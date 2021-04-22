@@ -1,0 +1,8 @@
+[postfix-sasl]
+enabled=true
+port = smtp,ssmtp,submission,imap2,imap3,imaps
+logpath  = /var/log/mail.log
+filter   = postfix-sasl
+
+findtime = 3600
+bantime = 86400
