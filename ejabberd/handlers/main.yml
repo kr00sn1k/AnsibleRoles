@@ -1,0 +1,5 @@
+---
+
+ - name: ejabberd_restart
+   service: name="ejabberd" state="restarted"
+   become: yes

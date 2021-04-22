@@ -1,0 +1,21 @@
+---
+
+ - name: Ставим Ejabberd
+   apt: pkg=ejabberd state=latest
+   become: yes
+
+ - name: Если нужно ставим транспорт PyICQ-t
+   apt: pkg=pyicqt
+   become: yes
+   when: custom_ejabberd_pyicqt
+
+ - name: Конфижим Ejabberd
+   template: src=ejabberd.yml.j2 dest=/etc/ejabberd/ejabberd.yml
+   become: yes
+   notify: ejabberd_restart
+
+# Почему-то не работает. Значит придется руками команду выполнить
+# - name: Создаем админов
+#   command: "/usr/sbin/ejabberdctl register {{ item.admin }} {{ item.domain }} {{ item.pass }}"
+#   with_items: custom_ejabberd_domains
+#   become: yes

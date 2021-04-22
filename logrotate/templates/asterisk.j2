@@ -1,0 +1,13 @@
+{{ logrotate_asterisk_full }} {
+        weekly
+        missingok
+        rotate 10
+        compress
+        delaycompress
+        notifempty
+        sharedscripts
+        postrotate
+                if /etc/init.d/asterisk status > /dev/null ; then \
+                    /etc/init.d/asterisk restart > /dev/null; \
+                fi;
+        endscript

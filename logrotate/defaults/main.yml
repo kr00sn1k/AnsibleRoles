@@ -1,0 +1,9 @@
+logrotate_cron_min: "0"
+logrotate_cron_hour: "2"
+logrotate_cron_day: "*"
+logrotate_cron_month: "*"
+logrotate_cron_year: "*"
+
+logrotate_asterisk_full: "/var/log/asterisk/messages
+/var/log/asterisk/full"
+logrotate_asterisk_queue: "/var/log/asterisk/queue_log"

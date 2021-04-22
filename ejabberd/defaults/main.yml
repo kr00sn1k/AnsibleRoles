@@ -1,0 +1,4 @@
+custom_ejabberd_pyicqt: true
+custom_ejabberd_domains: 
+ - { domain: 'localhost', admin: 'admin', pass: 'Zz123654' }
+custom_ejabbed_ip: 127.0.0.1

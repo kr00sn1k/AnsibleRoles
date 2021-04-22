@@ -1,0 +1,26 @@
+---
+
+ - name: Устанавливаем Logrotate
+   apt: pkg=logrotate state=latest force=yes
+   become: yes
+
+ - name: Заливаем конфигурации под различные службы
+   template: 
+     src: "{{ item }}.j2" 
+     dest: "/etc/logrotate.d/{{ item }}"
+     mode: 0644
+   with_items:
+   - asterisk
+   - zabbix-agent
+   - squidwpl
+   become: yes
+
+# - name: Добавляем Logrotate в  планировщик.
+#   cron: 
+#     name: "Rotate logs" 
+#     hour: "{{ logrotate_cron_hour }}"
+#     minute: "{{ logrotate_cron_min }}"  
+#     job: "/usr/sbin/logrotate -f /etc/logrotate.conf" 
+#     user: "root"
+#     state: absent
+#   become: yes

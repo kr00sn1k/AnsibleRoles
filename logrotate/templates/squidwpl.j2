@@ -1,0 +1,13 @@
+/var/log/squid3/access.log
+/var/log/squid3/cache.log
+{
+        daily
+        compress
+        delaycompress
+        rotate 10
+        missingok
+        sharedscripts
+        postrotate
+                test ! -e /var/run/squid3.pid || test ! -x /usr/sbin/squid3 || /usr/sbin/squid3 -k reload
+        endscript
+}
