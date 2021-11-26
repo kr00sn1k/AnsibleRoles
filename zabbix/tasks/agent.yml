@@ -4,9 +4,11 @@
 
  - name: Установка на Debian-подобные дистрибутивы
    apt: 
-     pkg: zabbix-agent
-     state: latest
+     name: ['zabbix-agent']
+     state: "latest"
+     update-cache: yes
    become: yes
+   ignore_errors: yes
    when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
  - name: Установка на Centos

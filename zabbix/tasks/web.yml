@@ -3,10 +3,7 @@
 #  Возня с веб-мордой
 
  - name: ZabbixWEB. Установка
-   apt: pkg={{ item }} state=latest
-   with_items:
-   - zabbix-frontend-php
-   - php-bcmath
-   - php-mbstring
-   - php-xml
+   apt:
+     name: ['php-xml','php-mbstring','php-bcmath','zabbix-frontend-php']
+     state: "latest"
    become: yes

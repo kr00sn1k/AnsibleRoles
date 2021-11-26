@@ -2,12 +2,11 @@
 
 # Возня с сервером
  - name: ZabbixServer. Установка
-   apt: pkg={{ item }} state=latest
+   apt: 
+     name: ['python-mysqldb', 'zabbix-server-mysql']
+     state: latest
    become: yes
    when: zabbix_server 
-   with_items:
-   - zabbix-server-mysql
-   - python-mysqldb 
 
  - name: ZabbixServer. БД. Копируем дамп первой установки zabbix-server
    copy: src=files/zabbixcreate.sql dest=/tmp
