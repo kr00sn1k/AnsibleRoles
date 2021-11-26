@@ -8,7 +8,6 @@
      state: "latest"
      update-cache: yes
    become: yes
-   ignore_errors: yes
    when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
  - name: Установка на Centos
