@@ -1,0 +1,15 @@
+---
+
+- name: "Install redis and other software"
+  apt:
+    name: ['redis-server']
+    state: latest
+    update_cache: yes
+  become: yes
+
+- name: "Generate config for redis"
+  template:
+    src: "redis.conf.j2"
+    dest: "/etc/redis/redis.conf"
+  become: yes
+  notify: "redis_restart"
