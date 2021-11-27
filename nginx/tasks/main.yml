@@ -1,0 +1,39 @@
+---
+
+- name: "Nginx: Install software"
+  apt:
+    name: ['nginx','openssl']
+    state: latest
+    update-cache: yes
+  become: yes
+
+- name: "Nginx: Check directories"
+  file:
+     state: "directory"
+     path: "/etc/nginx/{{ item }}"
+  with_items:
+  - "ssl"
+  - "includes"
+  become: yes
+  notify: nginx_restart
+
+- name: "Nginx: Copy includes"
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/includes/{{ item }}"
+    mode: 0644
+  with_items:
+  - "globalssl-template"
+  become: yes
+
+- name: "Nginx: Generate DH-param file for SSL"
+  openssl_dhparam:
+    path: "/etc/nginx/ssl/dhparam.pem"
+    size: 2048
+  become: yes
+
+- name: "Nginx: Adding nginx to autostart"
+  service:
+    name: "nginx"
+    enabled: True
+  become: yes
