@@ -1,0 +1,36 @@
+---
+
+- name: "Grafana: Install additional software"
+  apt: 
+    name: ['apt-transport-https','software-properties-common','wget']
+    state: latest
+    update-cache: yes
+  become: yes
+
+- name: "Grafana: Install GPG-keys for repository"
+  apt_key:
+      url: "{{ item }}"
+      state: present
+  with_items:
+  - "https://packages.grafana.com/gpg.key"
+  become: yes
+
+- name: "Grafana: Add repository to apt sources"
+  copy:
+    src: "grafana.list"
+    dest: "/etc/apt/sources.list.d/grafana.list"
+  become: yes
+
+- name: "Grafana: Install Grafana software"
+  apt:
+    name: ['grafana-enterprise']
+    state: latest
+    update-cache: yes
+  become: yes
+  notify: grafana_restart
+
+- name: "Grafana: Install to autoload"
+  service:
+    name: "grafana-server"
+    enabled: True
+  become: yes
