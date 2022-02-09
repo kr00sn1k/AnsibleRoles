@@ -1,0 +1,16 @@
+---
+
+jenkins_admin_username: "elve"
+jenkins_admin_password: "Nu4840ckV"
+
+jenkins_plugins:
+- "ansicolor"
+- "credentials"
+- "copyartifact"
+- "docker-plugin"
+- "job-dsl"
+- "mailer"
+- "pipeline-utility-steps"
+- "rebuild"
+- "ssh-agent"
+- "ws-cleanup"

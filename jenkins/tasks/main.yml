@@ -1,0 +1,45 @@
+---
+
+- name: "Jenkins: Install GPG-key for repo"
+  apt_key:
+      url: "{{ item }}"
+      state: present
+  with_items:
+  - "https://pkg.jenkins.io/debian-stable/jenkins.io.key"
+  become: yes
+
+- name: "Jenkins: Copy repo-file to apt-sources"
+  copy:
+    src: "jenkins.list"
+    dest: "/etc/apt/sources.list.d/jenkins.list"
+  become: yes
+
+- name: "Jenkins: Install Jenkins"
+  apt:
+    name: ['default-jdk', 'jenkins', 'subversion']
+    update_cache: yes
+  become: yes
+
+- name: "Jenkins: Create init-script dir"
+  file:
+    path: "/var/lib/jenkins/init.groovy.d"
+    state: "directory"
+    owner: "jenkins"
+    group: "jenkins"
+    mode: 0755
+  become: yes
+
+- name: "Jenkins: Add init-script with admin credetials"
+  template:
+    src: "security.groovy.j2"
+    dest: "/var/lib/jenkins/init.groovy.d/security.groovy"
+  become: yes
+  notify: jenkins_restart
+
+- name: "Jenkins: Configure JVM Arguments"
+  lineinfile:
+    dest: /etc/default/jenkins
+    regexp: '^JAVA_ARGS='
+    line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+  become: yes
+  notify: jenkins_restart
